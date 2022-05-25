@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Product</h1>
+    <a href="article.html">go to article</a>
+    <ul id="render"></ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            var accessToken = localStorage.getItem("token");
+            if (!accessToken) {
+                window.location.href = "/login.html"
+            }
+            var apiUrl = 'http://localhost:8080/api/v1/admin/product'
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        var data = JSON.parse(xhr.responseText)
+                            // localStorage.setItem("token", jsonResponse.accessToken)
+                        var render = document.getElementById("render")
+                        console.log(data)
+                        var content = ``;
+                        data.forEach(element => {
+                            content += `<li>${element.name}</li>`
+                        });
+                        render.innerHTML = content
+                            // window.location.href = "/article.html"
+                    } else if (xhr.status == 403) {
+                        alert("login to continue")
+                        window.location.href = "/login.html"
+                    }
+
+                }
+            }
+            xhr.open("GET", apiUrl, false)
+            xhr.setRequestHeader("Authorization", `Bearer ${localStorage.getItem("token")}`)
+            xhr.send()
+        })
+    </script>
+</body>
+
+</html>

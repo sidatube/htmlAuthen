@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>hello world</h1>
+    <form action="#" name="login">
+        <div> Username: <input type="text" name="username" /></div>
+        <div> Password: <input type="password" name="password" /></div>
+        <div><input type="button" name="btn-submit" value="Save"><input type="reset" value="Reset"></div>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            var loginUrl = 'http://localhost:8080/api/v1/login'
+            document.forms['login']['btn-submit'].onclick = () => {
+                var username = document.forms['login']['username'].value
+                var passwordHash = document.forms['login']['password'].value
+                var obj = {
+                    "username": username,
+                    "password": passwordHash
+                }
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = () => {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status == 200) {
+                            alert("login success!")
+                            var jsonResponse = JSON.parse(xhr.responseText)
+                            localStorage.setItem("token", jsonResponse.accessToken)
+                            window.location.href = "/article.html"
+                        }
+
+                    }
+                }
+                xhr.open("POST", loginUrl, false)
+                xhr.setRequestHeader('Content-type', "application/json")
+                xhr.send(JSON.stringify(obj))
+            }
+
+        })
+    </script>
+</body>
+
+</html>
